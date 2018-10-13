@@ -36,15 +36,9 @@ Repeat for the next byte.
 """
 
 from cryptopallump import *
-from Crypto.Cipher import AES
-from Crypto.Random import random
 
-def randbytes(count):
-    #Return a count length string of random bytes
-    rand = ''
-    for i in range(count):
-        rand += chr(random.randint(0, 255))
-    return rand
+
+
 
 def ecbrandom(cleartext):
     ecb = AES.new(randbytes(16))
@@ -62,20 +56,17 @@ def cbcrandom(cleartext):
     ciphertext = cbc.encrypt(scramble)
     return ciphertext
 
-def makefiles(cleartext):
-    if random.randint(0, 1) == 1:
-        return {'type' : 'cbc', 'cipher':(cbcrandom(cleartext))}
-    else:
-        return {'type': 'ecb', 'cipher': (ecbrandom(cleartext))}
 
 stuff = 'Um9sbGluJyBpbiBteSA1LjAKV2l0aCBteSByYWctdG9wIGRvd24gc28gbXkgaGFpciBjYW4gYmxvdwpUaGUgZ2lybGllcyBvbiBzdGFuZGJ5IHdhdmluZyBqdXN0IHRvIHNheSBoaQpEaWQgeW91IHN0b3A/IE5vLCBJIGp1c3QgZHJvdmUgYnkK'
+unknown = binascii.a2b_base64(stuff)
 
-challfile = "ice.txt"
-file = open(challfile, 'r')
-allit = file.read()
+myfile = "ice.txt"
+file = open(myfile, 'r')
+mystring = file.read()
 
-challs = [makefiles(allit) for i in range(10)]
+key = randbytes(16)
+ecb = AES.new(key)
 
-print len(challs)
-for x in challs:
-    print x['type'], scoreecb(blockit(x['cipher'], 16))
+padded = padpkcs(mystring + unknown, len(mystring + unknown) + 16 - len(mystring + unknown)%16)
+
+chall = ecb.encrypt(padded)

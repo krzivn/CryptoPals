@@ -1,5 +1,7 @@
 #! /usr/bin/python
 """
+Accumulation of useful code from challenges. Some might call it a library.
+
 
 #https://docs.python.org/3/library/binascii.html
 #https://docs.python.org/2/library/binascii.html#binascii.hexlify
@@ -10,6 +12,8 @@
 #AFIK, str (strings) in python 2.7 are literal byte sequences, not limited by ascii values
 """
 import binascii, string, itertools, base64
+from Crypto.Cipher import AES
+from Crypto.Random import random
 
 class CBC:
     def __init__(self, ECB, IV):
@@ -227,3 +231,10 @@ def scoreecb(x):
         if p[0] == p[1]:
             same += 1
     return same
+
+def randbytes(count):
+    #Return a count length string of random bytes
+    rand = ''
+    for i in range(count):
+        rand += chr(random.randint(0, 255))
+    return rand
