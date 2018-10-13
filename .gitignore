@@ -1,0 +1,5 @@
+#ignore pyc
+*.pyc
+
+#Ignore the test script, it's all over the place
+test.py
